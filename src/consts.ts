@@ -1,6 +1,5 @@
 // Constantes de link e marca, centralizadas.
-// NOTA: o repo radar-papers-mcp existe, mas e PRIVADO. Enquanto estiver privado,
-// este link vai 404 para visitantes sem acesso.
+// O repo radar-papers-mcp e publico.
 export const PROJECT = "radar-papers-mcp";
 export const GITHUB_URL = "https://github.com/fabianofilho/radar-papers-mcp";
 export const IAMED_URL = "https://iamed.cc";

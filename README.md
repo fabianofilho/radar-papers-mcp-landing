@@ -38,8 +38,7 @@ domínio são configurados manualmente.
 
 ## Notas
 
-- O repositório do projeto `radar-papers-mcp` existe, mas é privado. Os links de
-  GitHub vão falhar para visitantes sem acesso até ele ser tornado público.
+- O repositório do projeto `radar-papers-mcp` é público, então os links de GitHub funcionam.
 - O exemplo de `resumir_paper` é um retorno real do README do projeto.
 - O resumo sai do abstract e não é conferido contra ele; serve para triagem, não
   substitui a leitura. O link original vem em toda resposta.
