@@ -1,0 +1,62 @@
+---
+import CodeBlock from "./CodeBlock.astro";
+
+const buscarSig = `buscar_papers_novos(topico: str = "", dias: int = 7)`;
+
+const resumirSig = `resumir_paper(paper_id: str)`;
+
+// Retorno REAL do README do projeto.
+const resumirRetorno = `{
+  "titulo": "Mortality risk ranking after medical emergency team review…",
+  "url": "https://pubmed.ncbi.nlm.nih.gov/42761253/",
+  "origem": "llm",
+  "resumo": {
+    "problema": "Validação externa e redesenvolvimento de modelos preditivos de mortalidade após revisão da equipe de emergência.",
+    "metodo": "Coorte multicêntrica em quatro hospitais, 1.937 adultos.",
+    "achado_principal": "O modelo original discriminou bem (AUC 0,80) mas com estimativas variáveis entre hospitais; o novo modelo chegou a AUC 0,84 com menos variáveis.",
+    "relevancia": "Mostra que a discriminação pode ser robusta mesmo quando a calibração absoluta varia entre instituições."
+  }
+}`;
+---
+
+<section id="tools" class="border-b border-neutral-900">
+  <div class="mx-auto max-w-4xl px-6 py-20">
+    <p class="text-sm font-semibold uppercase tracking-wider text-emerald">As ferramentas</p>
+    <h2 class="mt-3 text-2xl font-bold text-white sm:text-3xl">Duas tools MCP expostas ao modelo</h2>
+    <p class="mt-3 max-w-2xl text-neutral-400">
+      Toda resposta traz o link original do paper. O resumo abaixo é um retorno
+      real do projeto; o resumo estruturado sai do abstract.
+    </p>
+
+    <div class="mt-10 grid gap-6 lg:grid-cols-2">
+      <article class="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-ink-800 p-5">
+        <div>
+          <h3 class="font-mono text-base font-semibold text-emerald">buscar_papers_novos</h3>
+          <p class="mt-2 text-sm leading-relaxed text-neutral-400">
+            Papers do período na base local, com a chave para usar no resumo e o
+            link original de cada um.
+          </p>
+        </div>
+        <CodeBlock code={buscarSig} lang="python" />
+        <div class="rounded-xl border border-neutral-800 bg-[#0d0d0d] p-4 text-sm leading-relaxed text-neutral-400">
+          Devolve os papers que casaram com o tópico na janela de dias, cada um
+          com <span class="font-mono text-neutral-300">paper_id</span> (chave),
+          título, tópicos e o link. O <span class="font-mono text-neutral-300">paper_id</span>
+          alimenta o <span class="font-mono text-neutral-300">resumir_paper</span>.
+        </div>
+      </article>
+
+      <article class="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-ink-800 p-5">
+        <div>
+          <h3 class="font-mono text-base font-semibold text-emerald">resumir_paper</h3>
+          <p class="mt-2 text-sm leading-relaxed text-neutral-400">
+            Resumo estruturado do abstract (problema, método, achado principal,
+            relevância). Fica cacheado; o mesmo paper não é resumido duas vezes.
+          </p>
+        </div>
+        <CodeBlock code={resumirSig} lang="python" />
+        <CodeBlock code={resumirRetorno} lang="json" caption="Retorno real do projeto" />
+      </article>
+    </div>
+  </div>
+</section>

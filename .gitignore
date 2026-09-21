@@ -1,0 +1,19 @@
+# build
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# ambiente
+.env
+.env.production
+.env.*.local
+
+# vercel
+.vercel/
+
+# ferramentas locais (nao versionar)
+.claude/
+.DS_Store
+npm-debug.log*

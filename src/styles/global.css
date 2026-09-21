@@ -1,0 +1,33 @@
+/* Base global. O @astrojs/tailwind ja injeta o preflight do Tailwind. */
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #e5e5e5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Respeita quem pediu menos movimento. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Selecao na cor da marca. */
+::selection {
+  background-color: rgba(45, 184, 158, 0.3);
+  color: #ffffff;
+}
+
+/* Alvo de ancora nao gruda embaixo do topo. */
+:target {
+  scroll-margin-top: 5rem;
+}

@@ -1,0 +1,33 @@
+---
+const itens = [
+  "O resumo sai do abstract, não do texto completo. Serve para triagem, decidir se vale abrir o paper; não substitui a leitura.",
+  "O resumo é gerado por LLM e pode errar. Confira os números no abstract original: o link vem em toda resposta.",
+  "Aqui não há conferência de citação literal. O campo achado_principal pode conter um número que o modelo interpretou errado.",
+  "A cobertura depende das suas queries. O que não casa com a query configurada não aparece; ausência de resultado não significa ausência de literatura.",
+];
+---
+
+<section id="aviso" class="border-b border-neutral-900 bg-amber-500/[0.04]">
+  <div class="mx-auto max-w-4xl px-6 py-10">
+    <div class="rounded-2xl border border-amber-500/25 bg-ink-800 p-6">
+      <div class="flex items-center gap-2.5">
+        <svg class="h-5 w-5 flex-shrink-0 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+        </svg>
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-amber-300">
+          O que a ferramenta faz e não faz
+        </h2>
+      </div>
+      <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+        {
+          itens.map((t) => (
+            <li class="flex gap-2.5 text-sm leading-relaxed text-neutral-300">
+              <span class="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-amber-400" aria-hidden="true" />
+              <span>{t}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

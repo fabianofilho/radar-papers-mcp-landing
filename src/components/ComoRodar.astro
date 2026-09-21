@@ -1,0 +1,60 @@
+---
+import CodeBlock from "./CodeBlock.astro";
+import { GITHUB_URL } from "../consts";
+
+const passos = `# 1. clonar e instalar
+git clone ${GITHUB_URL}.git
+cd radar-papers-mcp
+uv sync
+cp .env.example .env
+# opcional: PUBMED_API_KEY eleva o rate limit da NCBI de 3 para 10 req/s
+
+# 2. definir os tópicos em config/topicos.yaml e sincronizar
+uv run papers-cli topicos
+uv run papers-cli sync --dias 30
+
+# 3. buscar e resumir
+uv run papers-cli buscar "multicalibração"
+uv run papers-cli resumir "10.1016/j.exemplo.2026.100217"
+
+# 4. subir o servidor MCP e conectar ao seu cliente
+uv run radar-papers-mcp`;
+
+const topicos = `topicos:
+  - nome: multicalibração
+    pubmed: multicalibration[All Fields]   # sintaxe das E-utilities
+    medrxiv:                                # palavras simples, filtradas localmente
+      - multicalibration
+      - multi-calibration`;
+---
+
+<section id="como-rodar" class="border-b border-neutral-900">
+  <div class="mx-auto max-w-4xl px-6 py-20">
+    <p class="text-sm font-semibold uppercase tracking-wider text-emerald">Como rodar</p>
+    <h2 class="mt-3 text-2xl font-bold text-white sm:text-3xl">Roda na sua máquina</h2>
+    <p class="mt-3 max-w-2xl text-neutral-400">
+      Não é um serviço hospedado. Você define os tópicos, sincroniza das fontes
+      públicas e o servidor MCP roda ali, no seu computador, com o resumo pelo seu
+      LLM local.
+    </p>
+
+    <div class="mt-8 grid gap-6 lg:grid-cols-2 lg:items-start">
+      <CodeBlock code={passos} lang="bash" caption="Confira variáveis e opções no README do projeto." />
+      <div>
+        <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-neutral-500">Um tópico em config/topicos.yaml</p>
+        <CodeBlock code={topicos} lang="yaml" caption="Cada tópico tem duas configs porque as fontes funcionam diferente." />
+      </div>
+    </div>
+
+    <div class="mt-6 flex gap-3 rounded-xl border border-emerald/25 bg-emerald/5 p-4">
+      <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+      </svg>
+      <p class="text-sm leading-relaxed text-neutral-300">
+        O que sai da máquina: as requisições ao PubMed e ao medRxiv (serviços
+        públicos, não rode em loop nem contorne o limitador). Os tópicos ficam no
+        arquivo local, e o abstract vai para o seu LLM local no resumo.
+      </p>
+    </div>
+  </div>
+</section>

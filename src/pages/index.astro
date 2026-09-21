@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.astro";
+import Disclaimer from "../components/Disclaimer.astro";
+import Problema from "../components/Problema.astro";
+import ComoFunciona from "../components/ComoFunciona.astro";
+import Tools from "../components/Tools.astro";
+import ComoRodar from "../components/ComoRodar.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "radar-papers-mcp: monitor de PubMed e medRxiv com resumo em LLM local";
+const description =
+  "Servidor MCP open source que monitora PubMed e medRxiv por tópicos e resume os papers com um LLM local, numa base local deduplicada por DOI. Resumo de triagem, não substitui a leitura. Um projeto IA.med.";
+---
+
+<Layout title={title} description={description}>
+  <main>
+    <Hero />
+    <Disclaimer />
+    <Problema />
+    <ComoFunciona />
+    <Tools />
+    <ComoRodar />
+  </main>
+  <Footer />
+</Layout>
