@@ -1,8 +1,8 @@
 ---
 const camadas = [
-  { n: "01", titulo: "Fontes", texto: "PubMed (E-utilities) e medRxiv (details), por tópicos configuráveis. O rate limit da NCBI é respeitado; o medRxiv não busca por termo, então o filtro é local." },
+  { n: "01", titulo: "Fontes", texto: "PubMed (E-utilities) e medRxiv (details), por tópicos configuráveis. O sync pagina até o fim da janela e respeita o rate limit da NCBI; o medRxiv não busca por termo, então o filtro é local." },
   { n: "02", titulo: "Deduplicação", texto: "A chave é o DOI. Um paper já conhecido ganha o novo tópico na lista, em vez de virar uma segunda linha." },
-  { n: "03", titulo: "Armazenamento", texto: "Guarda em DuckDB local. O resumo fica cacheado: o mesmo paper não é resumido duas vezes." },
+  { n: "03", titulo: "Armazenamento", texto: "Guarda em DuckDB local, com a data de entrada na fonte, que é o que define \"novo\". O resumo fica cacheado: o mesmo paper não é resumido duas vezes." },
   { n: "04", titulo: "Resumo por LLM local", texto: "Do abstract, um resumo estruturado (problema, método, achado principal, relevância), exposto como tools MCP." },
 ];
 ---
@@ -32,9 +32,10 @@ const camadas = [
         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
       </svg>
       <p class="text-sm leading-relaxed text-neutral-300">
-        Um paper sem abstract devolve erro explícito, não um resumo inventado a
-        partir do título. E o resumo não é conferido contra o abstract: o link
-        original vem em toda resposta justamente para você checar os números.
+        Um paper sem abstract devolve resumo nulo com o motivo no aviso, não um
+        resumo inventado a partir do título. E o resumo não é conferido contra o
+        abstract: o link original vem em toda resposta justamente para você checar
+        os números.
       </p>
     </div>
   </div>
