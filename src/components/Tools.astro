@@ -1,13 +1,42 @@
 ---
 import CodeBlock from "./CodeBlock.astro";
 
-const buscarSig = `buscar_papers_novos(topico: str = "", dias: int = 7)`;
+const buscarSig = `buscar_papers_novos(topico: str = "", dias: int = 7, limite: int = 50)
+# topico: nome de um tópico configurado, sem caixa e sem acento,
+#         basta um trecho com palavras inteiras ("fairness"); vazio = todos
+# dias:   janela de 1 a 365, a contar de hoje
+# limite: de 1 a 200, os mais recentes primeiro`;
 
-const resumirSig = `resumir_paper(paper_id: str)`;
+// Saida real da v0.1.0 com limite=1, rodada numa copia da base local.
+const buscarRetorno = `{
+  "topico": "calibração de modelos clínicos",
+  "dias": 7,
+  "total": 59,
+  "resultados": [
+    {
+      "chave": "10.1016/j.ijantimicag.2026.108012",
+      "doi": "10.1016/j.ijantimicag.2026.108012",
+      "fonte": "pubmed",
+      "titulo": "A clinical prediction model to support risk-adapted fibrinogen monitoring during tigecycline therapy: multicenter development and validation.",
+      "autores": "Guo J, Cai X, Huo Y, Wen H, Li J, Guo S, Hao L, Wu X, Hou W, Li S, Jia H, Hou R",
+      "veiculo": "International journal of antimicrobial agents",
+      "data_publicacao": "2026-09-23",
+      "data_entrada": "2026-09-24",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42777972/",
+      "topicos": ["calibração de modelos clínicos"],
+      "tem_abstract": true
+    }
+  ],
+  "aviso": "Mostrando os 1 mais recentes de 59 papers do período. Reduza 'dias', filtre por tópico ou aumente 'limite' (até 200)."
+}`;
 
-// Retorno REAL do README do projeto.
+const resumirSig = `resumir_paper(paper_id: str)
+# paper_id: a chave devolvida por buscar_papers_novos (o DOI, em geral)`;
+
+// Conteudo do resumo e retorno real do README do projeto (a chave e ilustrativa).
 const resumirRetorno = `{
-  "titulo": "Mortality risk ranking after medical emergency team review…",
+  "chave": "pubmed:42761253",
+  "titulo": "Mortality risk ranking after medical emergency team review...",
   "url": "https://pubmed.ncbi.nlm.nih.gov/42761253/",
   "origem": "llm",
   "resumo": {
@@ -15,7 +44,8 @@ const resumirRetorno = `{
     "metodo": "Coorte multicêntrica em quatro hospitais, 1.937 adultos.",
     "achado_principal": "O modelo original discriminou bem (AUC 0,80) mas com estimativas variáveis entre hospitais; o novo modelo chegou a AUC 0,84 com menos variáveis.",
     "relevancia": "Mostra que a discriminação pode ser robusta mesmo quando a calibração absoluta varia entre instituições."
-  }
+  },
+  "aviso": "O resumo é gerado por LLM local a partir do abstract, não do texto completo. Sempre confira no link original antes de citar."
 }`;
 ---
 
@@ -24,8 +54,10 @@ const resumirRetorno = `{
     <p class="text-sm font-semibold uppercase tracking-wider text-emerald">As ferramentas</p>
     <h2 class="mt-3 text-2xl font-bold text-white sm:text-3xl">Duas tools MCP expostas ao modelo</h2>
     <p class="mt-3 max-w-2xl text-neutral-400">
-      Toda resposta traz o link original do paper. O resumo abaixo é um retorno
-      real do projeto; o resumo estruturado sai do abstract.
+      O servidor roda no stdio e só lê a base local; quem a alimenta é o
+      <span class="font-mono text-neutral-300">papers-cli sync</span>. Toda
+      resposta traz o link original do paper. Os exemplos abaixo são retornos
+      reais do projeto.
     </p>
 
     <div class="mt-10 grid gap-6 lg:grid-cols-2">
@@ -33,17 +65,26 @@ const resumirRetorno = `{
         <div>
           <h3 class="font-mono text-base font-semibold text-emerald">buscar_papers_novos</h3>
           <p class="mt-2 text-sm leading-relaxed text-neutral-400">
-            Papers do período na base local, com a chave para usar no resumo e o
-            link original de cada um.
+            Papers que entraram no PubMed ou no medRxiv nos últimos dias, lidos da
+            base local, com a chave para usar no resumo e o link original de cada um.
           </p>
         </div>
         <CodeBlock code={buscarSig} lang="python" />
         <div class="rounded-xl border border-neutral-800 bg-[#0d0d0d] p-4 text-sm leading-relaxed text-neutral-400">
-          Devolve os papers que casaram com o tópico na janela de dias, cada um
-          com <span class="font-mono text-neutral-300">paper_id</span> (chave),
-          título, tópicos e o link. O <span class="font-mono text-neutral-300">paper_id</span>
-          alimenta o <span class="font-mono text-neutral-300">resumir_paper</span>.
+          "Novo" é pela data de entrada na fonte
+          (<span class="font-mono text-neutral-300">data_entrada</span>: Entrez no
+          PubMed, postagem no medRxiv), não pela data da edição da revista
+          (<span class="font-mono text-neutral-300">data_publicacao</span>, só para
+          exibição). O campo <span class="font-mono text-neutral-300">chave</span>
+          de cada resultado é o <span class="font-mono text-neutral-300">paper_id</span>
+          do <span class="font-mono text-neutral-300">resumir_paper</span>.
+          <span class="font-mono text-neutral-300">total</span> conta todos os papers
+          do período; se passar do <span class="font-mono text-neutral-300">limite</span>,
+          o <span class="font-mono text-neutral-300">aviso</span> diz quantos ficaram de
+          fora. Tópico que não corresponde a um único configurado devolve a lista dos
+          válidos no <span class="font-mono text-neutral-300">aviso</span>.
         </div>
+        <CodeBlock code={buscarRetorno} lang="json" caption="Saída real com limite=1, numa cópia da base local" />
       </article>
 
       <article class="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-ink-800 p-5">
@@ -51,11 +92,16 @@ const resumirRetorno = `{
           <h3 class="font-mono text-base font-semibold text-emerald">resumir_paper</h3>
           <p class="mt-2 text-sm leading-relaxed text-neutral-400">
             Resumo estruturado do abstract (problema, método, achado principal,
-            relevância). Fica cacheado; o mesmo paper não é resumido duas vezes.
+            relevância), gerado pelo LLM local. Fica cacheado; o mesmo paper não é
+            resumido duas vezes. Sem abstract, ou com o LLM fora do ar,
+            <span class="font-mono text-neutral-300">resumo</span> vem nulo,
+            <span class="font-mono text-neutral-300">origem</span> vem
+            <span class="font-mono text-neutral-300">indisponivel</span> e o
+            <span class="font-mono text-neutral-300">aviso</span> diz o motivo.
           </p>
         </div>
         <CodeBlock code={resumirSig} lang="python" />
-        <CodeBlock code={resumirRetorno} lang="json" caption="Retorno real do projeto" />
+        <CodeBlock code={resumirRetorno} lang="json" caption="Resumo real do projeto; a chave é ilustrativa" />
       </article>
     </div>
   </div>

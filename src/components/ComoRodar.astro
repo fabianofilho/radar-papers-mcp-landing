@@ -17,8 +17,23 @@ uv run papers-cli sync --dias 30
 uv run papers-cli buscar "multicalibração"
 uv run papers-cli resumir "10.1016/j.exemplo.2026.100217"
 
-# 4. subir o servidor MCP e conectar ao seu cliente
-uv run radar-papers-mcp`;
+# 4. registrar o servidor MCP (stdio) no Claude Code
+claude mcp add radar-papers --scope user \\
+  -e DUCKDB_PATH=/caminho/para/radar-papers-mcp/data/papers.duckdb \\
+  -e TOPICOS_PATH=/caminho/para/radar-papers-mcp/config/topicos.yaml \\
+  -e QWEN_ENDPOINT=http://127.0.0.1:8080/v1 \\
+  -e QWEN_MODEL=local-model \\
+  -- uv --directory /caminho/para/radar-papers-mcp run radar-papers-mcp`;
+
+const agendado = `# sync diário às 04:10 (atraso aleatório de até 30 min)
+cp deploy/radar-papers-sync.service deploy/radar-papers-sync.timer \\
+   deploy/radar-papers-sync-falha.service ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now radar-papers-sync.timer
+
+# falhas recentes
+systemctl --user status radar-papers-sync.service
+journalctl --user -t radar-papers-sync -p err`;
 
 const topicos = `topicos:
   - nome: multicalibração
@@ -34,8 +49,11 @@ const topicos = `topicos:
     <h2 class="mt-3 text-2xl font-bold text-white sm:text-3xl">Roda na sua máquina</h2>
     <p class="mt-3 max-w-2xl text-neutral-400">
       Não é um serviço hospedado. Você define os tópicos, sincroniza das fontes
-      públicas e o servidor MCP roda ali, no seu computador, com o resumo pelo seu
-      LLM local.
+      públicas e o servidor MCP roda ali, no seu computador, pelo stdio do seu
+      cliente, com o resumo pelo seu LLM local (qualquer API OpenAI-compatible:
+      llama.cpp, Ollama, LM Studio). Distribuição por clone e
+      <span class="font-mono text-neutral-300">uv</span>, com Python 3.12+ e o SDK
+      <span class="font-mono text-neutral-300">mcp</span> 2.x.
     </p>
 
     <div class="mt-8 grid gap-6 lg:grid-cols-2 lg:items-start">
@@ -43,6 +61,29 @@ const topicos = `topicos:
       <div>
         <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-neutral-500">Um tópico em config/topicos.yaml</p>
         <CodeBlock code={topicos} lang="yaml" caption="Cada tópico tem duas configs porque as fontes funcionam diferente." />
+      </div>
+    </div>
+
+    <div class="mt-10">
+      <h3 class="text-lg font-semibold text-white">Sync agendado</h3>
+      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-neutral-400">
+        O servidor não agenda nada sozinho. O repositório traz em
+        <span class="font-mono text-neutral-300">deploy/</span> um timer systemd de
+        usuário para o sync diário. Falha não passa em silêncio: se o PubMed (em
+        qualquer tópico) ou o medRxiv falhar,
+        <span class="font-mono text-neutral-300">papers-cli sync</span> grava o que as
+        outras fontes trouxeram, escreve uma linha por falha no stderr
+        (<span class="font-mono text-neutral-300">falhou: pubmed/&lt;tópico&gt;: &lt;erro&gt;</span>
+        ou <span class="font-mono text-neutral-300">falhou: medrxiv: &lt;erro&gt;</span>)
+        e sai com código 1. Sem falha, sai com 0. O
+        <span class="font-mono text-neutral-300">OnFailure</span> da unit do sync
+        dispara <span class="font-mono text-neutral-300">radar-papers-sync-falha.service</span>,
+        que grava uma linha <span class="font-mono text-neutral-300">err</span> no
+        journal e, se houver <span class="font-mono text-neutral-300">notify-send</span>,
+        mostra uma notificação.
+      </p>
+      <div class="mt-4">
+        <CodeBlock code={agendado} lang="bash" caption="As units supõem o repo em ~/radar-papers-mcp e o uv em ~/.local/bin/uv; ajuste se for diferente." />
       </div>
     </div>
 

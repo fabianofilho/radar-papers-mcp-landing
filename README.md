@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-Abre em `http://localhost:4321/radar-papers` (o `base` é `/radar-papers`).
+Abre em `http://localhost:4321/mcps/radar-papers` (o `base` é `/mcps/radar-papers`).
 
 ## Build
 
@@ -31,15 +31,20 @@ npm run build
 npm run preview
 ```
 
-## Deploy
+## Publicação
 
-Destino pretendido: `https://mcp.iamed.cc/radar-papers`. O deploy na Vercel e o
-domínio são configurados manualmente.
+A página vive em `https://iamed.cc/mcps/radar-papers`. Este repo não tem deploy
+próprio (sem workflow nem `vercel.json`): o `dist/` do `npm run build` é copiado para
+`mcps/radar-papers/` no repo do site (`Medicina-IA/medicina-ia.github.io`), e o push
+na `main` de lá publica na Vercel. Mudança aqui só vai ao ar depois dessa cópia.
 
 ## Notas
 
 - O repositório do projeto `radar-papers-mcp` é público, então os links de GitHub funcionam.
-- O exemplo de `resumir_paper` é um retorno real do README do projeto.
+- O exemplo de `resumir_paper` é um retorno real do README do projeto (a `chave` é
+  ilustrativa). O de `buscar_papers_novos` é a saída real da v0.1.0 com `limite=1`,
+  rodada numa cópia da base local.
+- O MCP é só local (stdio). A página não aponta para nenhum serviço hospedado.
 - O resumo sai do abstract e não é conferido contra ele; serve para triagem, não
   substitui a leitura. O link original vem em toda resposta.
 
