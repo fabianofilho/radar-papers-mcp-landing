@@ -5,7 +5,7 @@ export const GITHUB_URL = "https://github.com/fabianofilho/radar-papers-mcp";
 export const IAMED_URL = "https://iamed.cc";
 export const LICENSE = "MIT";
 
-// Familia de MCPs open source da IA.med. SELF_SLUG marca o atual (some do rodape).
+// Familia de MCPs da IA.med (5 de 7 sao open source; ans e raciocinio-br sao privados). SELF_SLUG marca o atual (some do rodape).
 export const SELF_SLUG = "radar-papers";
 export const FAMILY = [
   { slug: "anvisa", nome: "anvisa-mcp", url: "https://iamed.cc/mcps/anvisa", desc: "Registro sanitário da Anvisa" },
