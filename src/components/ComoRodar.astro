@@ -9,7 +9,7 @@ uv sync
 cp .env.example .env
 # opcional: PUBMED_API_KEY eleva o rate limit da NCBI de 3 para 10 req/s
 
-# 2. definir os tópicos em config/topicos.yaml e sincronizar
+# 2. definir os tópicos em config/topicos.yaml e sincronizar (leva minutos)
 uv run papers-cli topicos
 uv run papers-cli sync --dias 30
 
@@ -55,6 +55,23 @@ const topicos = `topicos:
       <span class="font-mono text-neutral-300">uv</span>, com Python 3.12+ e o SDK
       <span class="font-mono text-neutral-300">mcp</span> 2.x.
     </p>
+
+    <p class="mt-4 max-w-2xl text-sm leading-relaxed text-neutral-400">
+      Só local, por stdio: não há conector hospedado, e o resumo usa modelo local.
+      A coleta (<span class="font-mono text-neutral-300">papers-cli sync --dias 30</span>)
+      leva minutos. Licença MIT, a única da família: o
+      <span class="font-mono text-neutral-300">ans-mcp</span> e o
+      <span class="font-mono text-neutral-300">raciocinio-br-mcp</span> são privados.
+    </p>
+
+    <div class="mt-6 rounded-xl border border-neutral-800 bg-ink-800 p-4">
+      <p class="text-xs font-semibold uppercase tracking-wide text-neutral-500">Estado conferido em 12/10/2026</p>
+      <p class="mt-2 text-sm leading-relaxed text-neutral-300">
+        Na base do autor: 280 papers e 1 resumo de triagem já gerado, em 6 MB, e 100
+        testes automatizados. São números de uma leitura em 12/10/2026 e envelhecem;
+        a sua base terá o tamanho dos seus tópicos.
+      </p>
+    </div>
 
     <div class="mt-8 grid gap-6 lg:grid-cols-2 lg:items-start">
       <CodeBlock code={passos} lang="bash" caption="Confira variáveis e opções no README do projeto." />
